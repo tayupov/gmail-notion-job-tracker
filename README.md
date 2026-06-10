@@ -169,9 +169,8 @@ The workflow ([.github/workflows/track.yml](.github/workflows/track.yml)) runs a
   auto-create new options on write; **status**-type properties cannot have
   options created via the API, so make sure the four status values exist if you
   use a status-type column.
-- Free-form email matching isn't perfect. Review the table occasionally; the
-  dry-run mode is useful for sanity-checking before a live run.
-- All secrets live in GitHub Secrets and `.env` (gitignored) — none are committed.
+- Free-form email matching isn't perfect. Review the table occasionally
+- The dry-run mode is useful for sanity-checking before a live run.
 
 ## License
 
