@@ -1,4 +1,6 @@
-# Application Tracker
+# Gmail → Notion Job Tracker
+
+> npm package name: `gmail-notion-job-tracker`
 
 Reads your recent Gmail twice a day, uses **Claude Haiku 4.5** to detect new job
 applications and status changes, and syncs them to a **Notion** table. Runs
@@ -10,14 +12,39 @@ Gmail (read-only)  ──▶  Claude (extract actions)  ──▶  Notion (creat
    last ~24h of inbox                              existing rows = dedup/state
 ```
 
-The Notion table is expected to have these columns (any column may be the
-title — the code detects it): **Company, Position, Status, Application Date,
-Salary Range, Job URL, Contact Person, Notes**. The `Status` values the tool
-writes match the options on the database's `status` property: `Applied`,
-`Interview Scheduled`, `Interviewing`, `Offer Received`, `Accepted`, `Rejected`
-(`Not Applied` is left for rows you create by hand). Because `Status` is a
-`status`-type property, these option names must already exist — the API can't
-create them.
+## Notion database setup
+
+Create a Notion database with these columns, named **exactly** as shown — the
+code matches by name (and detects the title column by type, so any one of them
+may be the title):
+
+| Column | Type |
+| --- | --- |
+| Company | Text (`rich_text`) |
+| Position | Text |
+| Status | **Status** (or Select — see note) |
+| Application Date | Date |
+| Salary Range | Text |
+| Job URL | URL or Text |
+| Contact Person | Text |
+| Notes | Title (recommended) |
+
+The `Status` property must offer these option names, again **exactly**:
+
+```
+Not Applied · Applied · Interview Scheduled · Interviewing · Offer Received · Accepted · Rejected
+```
+
+The tool only ever writes `Applied`, `Interview Scheduled`, `Interviewing`,
+`Offer Received`, `Accepted`, `Rejected` — `Not Applied` is left for rows you
+add by hand. If `Status` is a **status**-type property the Notion API **cannot
+create options**, so all of the above must already exist before the first run;
+a **select**-type property auto-creates them. These names are defined in
+[src/schema.ts](src/schema.ts) (`StatusEnum`) — if your workflow uses different
+stages, edit that enum to match your database.
+
+> Tip: the fastest way to get an exact-match schema is to duplicate a ready-made
+> template. _(Add your published Notion template link here.)_
 
 **Idempotency:** because Claude is always shown the already-tracked
 applications, re-seeing the same email on the next run produces no change. No
@@ -91,10 +118,18 @@ npm run track
 
 ### 6. Deploy to GitHub Actions
 
+Get your own copy of the repo — either click **Use this template** / **Fork** on
+GitHub, or push a fresh repo:
+
 ```bash
-git init && git add . && git commit -m "Application tracker"
-gh repo create application-tracker --private --source=. --push
+git init && git add . && git commit -m "Initial commit"
+gh repo create gmail-notion-job-tracker --private --source=. --push
 ```
+
+> **Never commit your `.env`.** It's gitignored by default; keep it that way, and
+> use your **own** credentials — generate your own Anthropic key, Notion token,
+> and Google OAuth client. If a secret is ever exposed, rotate it (and re-run
+> `npm run get-token` after rotating the Google client secret).
 
 Then add the six secrets under **Settings → Secrets and variables → Actions**:
 
@@ -137,3 +172,7 @@ The workflow ([.github/workflows/track.yml](.github/workflows/track.yml)) runs a
 - Free-form email matching isn't perfect. Review the table occasionally; the
   dry-run mode is useful for sanity-checking before a live run.
 - All secrets live in GitHub Secrets and `.env` (gitignored) — none are committed.
+
+## License
+
+[MIT](LICENSE) © Roman Tayupov

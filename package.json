@@ -1,9 +1,28 @@
 {
-  "name": "application-tracker",
+  "name": "gmail-notion-job-tracker",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "type": "module",
   "description": "Reads recent Gmail twice a day, detects job-application status changes with Claude, and syncs them to a Notion table.",
+  "license": "MIT",
+  "author": "Roman Tayupov",
+  "keywords": [
+    "job-tracker",
+    "job-applications",
+    "gmail",
+    "notion",
+    "claude",
+    "anthropic",
+    "automation"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tayupov/gmail-notion-job-tracker.git"
+  },
+  "homepage": "https://github.com/tayupov/gmail-notion-job-tracker#readme",
+  "bugs": {
+    "url": "https://github.com/tayupov/gmail-notion-job-tracker/issues"
+  },
   "scripts": {
     "track": "tsx src/main.ts",
     "get-token": "tsx scripts/get-refresh-token.ts",
