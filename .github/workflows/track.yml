@@ -2,8 +2,10 @@ name: Track applications
 
 on:
   schedule:
-    # 07:00 and 19:00 UTC — twice a day, ~12h apart.
-    - cron: "0 7,19 * * *"
+    # 05:17 and 17:17 UTC — ~07:17/19:17 CEST (summer). Off-:00 to reduce
+    # GitHub dropping/delaying the run. Times are fixed UTC, so in winter (CET)
+    # they land ~06:17/18:17 local.
+    - cron: "17 5,17 * * *"
   workflow_dispatch: # allow manual runs from the Actions tab
 
 jobs:
